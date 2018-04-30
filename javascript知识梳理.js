@@ -83,14 +83,80 @@ JavaScript变量类型(按照存储方式)
 原型和原型链
     题目
         如何准确的判断一个变量是数组类型
-
+            var arr = []
+            arr instanceof Array
         写一个原型链继承的例子
+            // 动物
+            function Animal() {
+                this.eat = function() {
+                    console.log("animal eat")
+                }
+            }
+            // 狗
+            function Dog() {
+                this.bark = function() {
+                    console.log('dog dark')
+                }
+            }
+            Dog.prototype = new Animal(); // 把这个Dog.prototype的值改了Animal的对象,就有了个eat的属性了
+            // 哈士奇
+            var hashiqi = new Dog()
+            // 我们的 hashiqi 有几种属性 ?    有bark,是new出来的(new的过程) 有eat,是hashiqi.__proto__中的
 
+            /**
+             * 
+             * 
+             * 标准写法 ======================
+             * 
+             * 
+             * 
+             */
+            /*
+            
+                function Elem(id) {
+                    this.elem = document.getElementById(id)
+                }
+
+                Elem.prototype.html = function(val) {
+                    var elem = this.elem
+                    if(val) {
+                        elem.innerHTML = val
+                        return this // 为了链式操作
+                    } else {
+                        return elem.innerHTML
+                    }
+                }
+
+                Elem.prototype.on = function(type,fn) {
+                    var elem = this.elem
+                    elem.addEventListener(type,fn)
+                    return this
+                }
+
+                var div1 = new Elem('div-id')
+                div1.html('<p>hello imooc</p>').on('click',function(){
+                    alert('hello')
+                })
+            
+            
+            
+            
+            
+            */
         描述new一个构造函数并对象的过程
             首先new构造函数的时候,可以把参数传进去,也可以不传,然后构造函数里面的this会先变成一个空对象,这个空对象就表示这个构造函数了,函数也是引用类型嘛,
             然后如果传入参数,就this.xxx = xxxVal,最后把this返回,赋值给句柄.这个时候,这个句柄就具有了
             这些属性了.
+
+            /*
+                总结
+                    1. 创建一个新对象
+                    2. this指向这个对象
+                    3. 执行代码,即对this赋值
+                    4. 返回this
+            */
         框架源码中如何使用原型链
+            搜索XXX源码分析
     知识点
         构造函数
             function Foo(name, age) {
@@ -150,10 +216,28 @@ JavaScript变量类型(按照存储方式)
                             console.log(item)
                         }
                     }
-            /*
+            */
         原型链
-
+            // 构造函数
+            function Foo(name, age) {
+                this.name = name
+            }
+            Foo.prototype.alertName = function() { alert(this.name) }
+            // 创建实例
+            var f = new Foo('zhangsan')
+            f.printName = function() { console.log(this.name) }
+            // 测试
+            f.printName()
+            f.alertName()
+            f.toString() // 要去f.__proto__.__proto__中查找
         原型链的具体表示形式之一instanceof
+            instanceof用于判断引用类型属于哪个构造函数
+            /*  
+                f instanceof Foo 的判断逻辑
+                    f的__proto__一层一层往上,能否对应到Foo.prototype
+                再试着判断f instanceof Object
+                    一层一层往上找,可以找得到
+            */
 
 
 
