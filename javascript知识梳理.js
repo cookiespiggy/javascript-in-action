@@ -238,7 +238,102 @@ JavaScript变量类型(按照存储方式)
                 再试着判断f instanceof Object
                     一层一层往上找,可以找得到
             */
+作用域和闭包
+    题目
+        说一下对变量提升的理解
 
+        说明this几种不同的使用场景
+
+        创建10个<a>标签,点击的时候弹出来对应的序号(这其实不是DOM操作的问题,是闭包或者作用域的问题)
+
+        如何理解作用域
+
+        实际开发中闭包的应用(闭包是作用域这个知识点的实际应用)
+    
+    知识点
+        执行上下文
+            /*  代码演示
+
+                console.log(a) // underfined
+                var a = 100
+
+                fn('zhangsan') // 'zhangsan' 20
+                function fn(name) {
+                    age = 20
+                    console.log(name,age)
+                    var age
+                }
+
+            */
+            讲解
+                范围: 一段<script>内或者一个函数内,都会生成一个执行上下文
+                针对script>内来说,会生成一个全局的执行上下文
+                    在执行之前先把变量定义和函数声明拿出来,拿到最开始
+                针对函数来说,会生成一个函数执行上下文
+                    在函数执行之前,会把变量定义|函数声明|this|arguments拿出来
+                    注意函数声明和函数表达式的区别
+                        声明: function fn(){}
+                        表达式: var fn = function() {}
+                
+        this
+            要在执行时才能确认值,定义时无法确认(谁调用了函数,this就指向谁)
+            使用场景
+                作为构造函数执行(构造函数的this和其他的不一样,这就牵扯出了new的过程了,首先是一个空对象)
+                    function Foo(name) {
+                        // this = {}
+                        this.name = name
+                        // return this
+                    }
+                    var f = new Foo('zhangsan')
+                作为对象属性执行
+                    var obj = {
+                        name : 'A',
+                        printName : function() {
+                            console.log(this.name)
+                        }
+                    }
+                    obj.printName() // 此时this === obj
+                作为普通函数执行(this是window)
+                    function fn() {
+                        console.log(this) // 此时 this === window
+                    }
+                    fn() // 此时 this === window
+
+                call|apply|bind(框架里用来改变this的值,有点像Java中的反射)
+                    function fn1(name,age) {
+                        alert(name)
+                        console.log(this) 
+                    }
+                    fn1.call({x:100},'zhangsan',20) // 此时this === {x:100}
+                    fn1.apply({x:100},['zhangsan',20]) // 此时this === {x:100}
+                    
+                    var fn2 =function (name,age) {
+                        alert(name)
+                        console.log(this) // this === {y : 200}
+                    }.bind({y : 200})
+                    fn2('zhangsan',20)
+        作用域
+            js没有块级作用域
+            只有函数作用域和全局作用域
+            /*
+                function fn2() {
+                    var f = 100
+                    console.log(f)
+                }
+                undefined
+                fn2()
+                VM407:3 100
+                undefined
+                fn2.f = 200
+                200
+                fn2()
+                VM407:3 100
+            */
+        作用域链
+            本作用域中没有定义,该变量就是自由变量,去定义本函数的父级作用域中去找
+            一个自由变量,去往父级作用域中去找,就形成了一个链式的结构
+        闭包
+            
 
 
 
