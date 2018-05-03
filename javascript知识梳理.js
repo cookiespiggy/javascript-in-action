@@ -241,15 +241,68 @@ JavaScript变量类型(按照存储方式)
 作用域和闭包
     题目
         说一下对变量提升的理解
-
+            变量定义
+            函数声明(注意和函数表达式的区别) 
         说明this几种不同的使用场景
-
+            作为构造函数执行
+            作为对象属性执行
+            作为普通函数执行
+            call|apply|bind
         创建10个<a>标签,点击的时候弹出来对应的序号(这其实不是DOM操作的问题,是闭包或者作用域的问题)
-
+            // 1. 定义两个变量,一个用于循环,一个用于创建a标签
+            var i, a 
+            for(i=0;i<10;i++) {
+                a = document.createElement('a') 
+                a.innerHTML = i + '<br>'
+                a.addEventListener('click',function(e) {
+                    e.preventDefault() // 链接嘛,阻止一下默认行为,不让它跑
+                    alert(i) // 自由变量,要去父作用域去找,没有块级作用域,所以去全局作用域去找,此时i=10了
+                })
+                document.body.appendChild(a)
+            }
+            // 当我们点击的时候,这个函数才执行,此时的i是自由变量,去定义时候的位置向上依次寻找 ****
+            // 正确的写法
+            var i
+            for(i=0;i<10;i++) {
+                (function(i) { // 这个i是接收
+                    // 函数作用域
+                    var a = document.createElement('a') 
+                    a.innerHTML = i + '<br>'
+                    a.addEventListener('click',function(e) {
+                        e.preventDefault() // 
+                        alert(i) // 自由变量,要去父作用域去找
+                    })
+                document.body.appendChild(a)
+                })(i) // 这个i是传入
+            }
         如何理解作用域
-
+            自由变量
+            作用域链,即自由变量的查找
+            闭包的两个场景(返回函数,函数作为参数)
         实际开发中闭包的应用(闭包是作用域这个知识点的实际应用)
-    
+            // 闭包实际应用中主要用于封装变量,收敛权限(不暴露变量,防止别人修改)
+            function isFirstLoad() {
+                var _list = [] // 私有的,在函数内,不给别人用的变量_开头
+            
+                return function(id) {
+                    if(_list.indexOf(id) >= 0) {
+                        return false
+                    } else {
+                        _list.push(id) //_list为自由变量
+                        return true
+                    }
+                    
+
+                }
+            }
+
+            var firstLoad = isFirstLoad()
+            firstLoad(10) // true
+            firstLoad(10) // false
+            firstLoad(20) // true
+            firstLoad(20) // 
+            
+            // 你在isFirstLoad函数外面,根本不可能修改掉_list的值
     知识点
         执行上下文
             /*  代码演示
